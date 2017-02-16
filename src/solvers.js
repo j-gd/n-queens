@@ -32,9 +32,9 @@ window.findNRooksSolution = function(n) {
   var addPiece = function(level, row, col) {
     // var childBoard = new Board(board.rows());
 
-    if (!board._isInBounds(row, col)) {
-      return false;
-    }
+    // if (!board._isInBounds(row, col)) {
+    //   return false;
+    // }
     board.togglePiece(row, col);
     // check conflicts
     if (!board.hasAnyRooksConflicts()) {
