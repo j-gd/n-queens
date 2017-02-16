@@ -21,35 +21,115 @@ window.findNRooksSolution = function(n) {
   var board = new Board({'n': n});
   // console.log ('our board = ', board);
 
-  var set = function (row, col) {
-    board.get(row)[col] = 1;
-    board.trigger('change');    
+  // var set = function (row, col) {
+  //   board.get(row)[col] = 1;
+  //   board.trigger('change');    
+  // };
+
+  // // seed
+  // set(0, 0);
+
+  // // pos
+  // var pos = [0, 0];
+
+  // board.set()
+
+
+  // board.togglePiece(0, 0);
+  // var level = 1;
+  // board.togglePiece(1, 1);
+  // view = new BoardView({model: board});
+  // console.log('parent: ', board);
+  // console.log('board.attr: ', board.attributes);
+  // var newBoard = board.clone();
+  // console.log('rows: ', board.rows());
+
+  var increment = function(r, c) {
+    if (c === n - 1) {
+      c = 0;
+      r++;
+    } else {
+      c++;
+    }
+    return [r, c];
   };
 
-  // seed
-  set(0, 0);
+  var addPiece = function(board, level, row, col) {
+    // var childBoard = new Board(board.rows());
+    var childBoard = board;
+    // var childBoard = new Board({'n': n});
+    // for (var i = 0; i < n; i++) {
+    //   childBoard.get(i) = board.rows();
+    // }
+    // console.log('child: ', childBoard);
+    // console.log('clone: ', newBoard);
+    // Recurse here: new object, copy of parent object
+    // var childBoard = new Board ({'n': n});
 
-  // pos
-  var pos = [0,0];
-
-  board.togglePiece(0, 3);
-  console.log('parent: ', board);
-  console.log('board.attr: ', board.attributes);
-
-  var childBoard = new Board(board.attributes);
-  console.log('child: ', childBoard);
-
-  // Recurse here: new object, copy of parent object
-  // var childBoard = new Board ({'n': n});
-  for (var row = 0; row < n; row++) {
-    // childBoard.row = parentBoard.rows(row).slice();
-
-    for (var col = 0; col < n; col++) {
-      // new board, copy of old one
-      // childBoard
-
+    if (!childBoard._isInBounds(row, col)) {
+      return false;
     }
-  }
+    // debugger;
+    childBoard.togglePiece(row, col);
+    // level++;
+    // check conflicts
+    if (!childBoard.hasAnyRooksConflicts()) {
+      // no conflicts
+      if (level + 1 < n) {
+        // not enough pieces yet
+        while (childBoard._isInBounds(row, col)) {
+          // debugger;
+          [row, col] = increment(row, col);
+
+          var found = addPiece(childBoard, level + 1, row, col);
+          if (found) {
+            return true;
+          }
+          // [row, col] = increment(row, col);
+        }
+        return false;
+        // var result = addPiece(childBoard, level + 1, row, col);
+        // if (result === 'no solution') {
+        //   [row, col] = increment(row, col);
+        // }
+      } else {
+        // found solution
+        // debugger;
+        solution = childBoard.rows().slice(0);
+        return true;
+      }
+    } else {
+      // has conflict
+      childBoard.togglePiece(row, col);
+
+      return false;
+    }
+
+    // for (var row = r; row < n; row++) {
+    //   // childBoard.row = parentBoard.rows(row).slice();
+
+    //   for (var col = 0; col < n; col++) {
+    //     // new board, copy of old one
+    //     // var pos = [row, col];
+    //     if (row === 0 || col === 0) {
+
+    //     } else {
+    //       childBoard.togglePiece(row, col);
+    //       // level++;
+    //       // check conflicts
+    //       if (!childBoard.hasAnyRookConflicts()) {
+    //         if (level < n) {
+    //           addPiece(childBoard, level + 1, row, col);
+    //         }
+    //       }
+    //     }
+
+              
+    //   }
+    // }
+  };
+
+  addPiece(board, 0, 0, 0);
   // Iterate here: pos++
   // set(pos)
   // checkconflicts (board)
